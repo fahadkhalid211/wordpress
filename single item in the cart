@@ -1,0 +1,17 @@
+// This code snippet allows only a single item in the woocommerce cart, it keeps the recent item and removes the previous one
+
+function allow_only_one_item_in_cart( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
+    // Check if there's more than one item in the cart
+    if ( WC()->cart->get_cart_contents_count() > 1 ) {
+        // Get the most recent item added to the cart
+        $most_recent_item_key = array_key_last( WC()->cart->get_cart() );
+
+        // Remove all items from the cart except the most recent one
+        foreach ( WC()->cart->get_cart() as $key => $cart_item ) {
+            if ( $key !== $most_recent_item_key ) {
+                WC()->cart->remove_cart_item( $key );
+            }
+        }
+    }
+}
+add_action( 'woocommerce_add_to_cart', 'allow_only_one_item_in_cart', 10, 6 );
